@@ -1,0 +1,19 @@
+{
+  "name": "KnowMe",
+  "short_name": "KnowMe",
+  "description": "Remember the people you care about — favorites, dates, and gift ideas",
+  "version": "1.0.3",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F6EFE6",
+  "theme_color": "#C45C4A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

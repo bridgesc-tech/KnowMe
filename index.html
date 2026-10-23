@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#C45C4A">
+    <title>KnowMe</title>
+    <link rel="icon" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css?v=1.0.3">
+</head>
+<body>
+    <div class="container">
+        <header class="app-header" id="mainHeader">
+            <div>
+                <h1>KnowMe</h1>
+                <p class="header-sub">Remember the people you love</p>
+            </div>
+        </header>
+
+        <div class="tab-content active" id="homeTab">
+            <section class="ask-cta" id="askCta">
+                <p>Learn one new thing</p>
+                <button type="button" class="btn btn-primary" id="homeAskBtn">Ask a question</button>
+            </section>
+            <section>
+                <h2 class="section-title">Coming up</h2>
+                <div id="upcomingList"></div>
+            </section>
+            <section>
+                <h2 class="section-title">People</h2>
+                <div id="homePeople"></div>
+            </section>
+        </div>
+
+        <div class="tab-content" id="peopleTab">
+            <div class="list-header">
+                <h2 class="section-title">Your people</h2>
+                <button type="button" class="btn btn-primary" id="addPersonBtn">Add</button>
+            </div>
+            <div id="peopleList"></div>
+        </div>
+
+        <div class="tab-content" id="askTab">
+            <div class="form-group">
+                <label for="askPersonSelect">Who</label>
+                <select id="askPersonSelect"></select>
+            </div>
+            <div class="form-group">
+                <label for="askCategorySelect">Topic</label>
+                <select id="askCategorySelect"></select>
+            </div>
+            <div class="question-card" id="questionCard"></div>
+            <div id="askAnswerWrap" class="ask-answer-wrap hidden">
+                <label for="askAnswerInput">Their answer</label>
+                <textarea id="askAnswerInput" rows="4" maxlength="400" placeholder="Write what you learned..."></textarea>
+                <div class="btn-row">
+                    <button type="button" class="btn btn-primary" id="saveAnswerBtn">Save to profile</button>
+                    <button type="button" class="btn btn-secondary" id="skipQuestionBtn">Another question</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="moreTab">
+            <h2 class="section-title">On this phone</h2>
+            <p class="help-text">Notes stay on this device. Nothing is sent to the cloud. Export a backup if you switch phones.</p>
+            <div class="btn-stack">
+                <button type="button" class="btn btn-primary" id="exportBtn">Export backup</button>
+                <button type="button" class="btn btn-secondary" id="importBtn">Import backup</button>
+                <input type="file" id="importFile" accept="application/json" hidden>
+            </div>
+            <h2 class="section-title">Add to Home Screen</h2>
+            <p class="help-text">On iPhone: Share, then Add to Home Screen. On Android: the browser menu, then Install app or Add to Home screen.</p>
+            <p class="version-text" id="versionText">Version 1.0.3</p>
+        </div>
+    </div>
+
+    <nav class="bottom-nav" aria-label="Main">
+        <button class="nav-item active" data-tab="home" type="button">
+            <span class="nav-icon">⌂</span>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" data-tab="people" type="button">
+            <span class="nav-icon">☺</span>
+            <span>People</span>
+        </button>
+        <button class="nav-item" data-tab="ask" type="button">
+            <span class="nav-icon">?</span>
+            <span>Ask</span>
+        </button>
+        <button class="nav-item" data-tab="more" type="button">
+            <span class="nav-icon">⋯</span>
+            <span>More</span>
+        </button>
+    </nav>
+
+    <div id="personScreen" class="overlay hidden">
+        <button type="button" class="text-btn" id="closePersonBtn">‹ People</button>
+        <div class="hub-photo-wrap">
+            <button type="button" class="hub-photo" id="hubPhotoBtn" aria-label="Add or change photo">
+                <img id="hubPhotoImg" alt="">
+                <span id="hubPhotoPlaceholder">Add a photo</span>
+            </button>
+            <input type="file" id="photoInput" accept="image/*" hidden>
+        </div>
+        <h2 id="hubName"></h2>
+        <p id="hubRelationship" class="hub-relationship"></p>
+        <div class="hub-actions">
+            <button type="button" class="btn btn-secondary" id="editPersonBtn">Edit</button>
+            <button type="button" class="btn btn-primary" id="hubAskBtn">Ask a question</button>
+        </div>
+        <div class="category-grid" id="categoryGrid"></div>
+    </div>
+
+    <div id="categoryScreen" class="overlay overlay-top hidden">
+        <button type="button" class="text-btn" id="closeCategoryBtn">‹ Back</button>
+        <h2 id="categoryTitle"></h2>
+        <p id="categoryHint" class="help-text"></p>
+        <div id="categoryNotes"></div>
+        <button type="button" class="btn btn-primary add-btn" id="addNoteBtn">Add</button>
+    </div>
+
+    <div id="personModal" class="modal hidden">
+        <div class="modal-card">
+            <h2 id="personModalTitle">Add someone</h2>
+            <div class="form-group">
+                <label for="personNameInput">Name</label>
+                <input type="text" id="personNameInput" maxlength="60" placeholder="Their name">
+            </div>
+            <div class="form-group">
+                <label for="personRelationshipInput">Relationship (optional)</label>
+                <input type="text" id="personRelationshipInput" maxlength="40" placeholder="Spouse, mom, friend...">
+            </div>
+            <button type="button" class="btn btn-primary" id="savePersonBtn">Save</button>
+            <button type="button" class="btn btn-danger hidden" id="deletePersonBtn">Remove this person</button>
+            <button type="button" class="btn btn-secondary" id="cancelPersonBtn">Cancel</button>
+        </div>
+    </div>
+
+    <div id="noteModal" class="modal hidden">
+        <div class="modal-card">
+            <h2 id="noteModalTitle">Add</h2>
+            <div class="form-group" id="noteLabelGroup">
+                <label for="noteLabelInput">Label</label>
+                <input type="text" id="noteLabelInput" maxlength="60">
+                <div class="chip-row" id="dateLabelChips"></div>
+            </div>
+            <div class="form-group hidden" id="noteDateGroup">
+                <label for="noteDateInput">Date</label>
+                <input type="date" id="noteDateInput">
+            </div>
+            <div class="form-group">
+                <label for="noteValueInput" id="noteValueLabel">Details</label>
+                <textarea id="noteValueInput" rows="4" maxlength="400" placeholder="What you want to remember"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" id="saveNoteBtn">Save</button>
+            <button type="button" class="btn btn-danger hidden" id="deleteNoteBtn">Delete</button>
+            <button type="button" class="btn btn-secondary" id="cancelNoteBtn">Cancel</button>
+        </div>
+    </div>
+
+    <script src="questions.js?v=1.0.3"></script>
+    <script src="script.js?v=1.0.3"></script>
+</body>
+</html>
