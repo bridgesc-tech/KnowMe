@@ -15,6 +15,7 @@
     --border: #E8DDD0;
     --danger: #B42318;
     --nav-height: 64px;
+    --nav-bottom: max(4px, calc(env(safe-area-inset-bottom, 0px) - 30px));
     --screen-inset-top: 48px;
     --screen-inset-bottom: 12px;
     --screen-inset-side: 14px;
@@ -38,7 +39,7 @@ body {
     flex-direction: column;
     padding-top: max(var(--screen-inset-top), env(safe-area-inset-top, 0px));
     padding-right: max(var(--screen-inset-side), env(safe-area-inset-right, 0px));
-    padding-bottom: calc(var(--nav-height) + max(12px, env(safe-area-inset-bottom, 0px) - 16px) + 10px);
+    padding-bottom: calc(var(--nav-height) + var(--nav-bottom) + 10px);
     padding-left: max(var(--screen-inset-side), env(safe-area-inset-left, 0px));
     color: var(--text);
 }
@@ -208,7 +209,7 @@ input, textarea, select, button {
     position: fixed;
     left: max(var(--screen-inset-side), env(safe-area-inset-left, 0px));
     right: max(var(--screen-inset-side), env(safe-area-inset-right, 0px));
-    bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) - 16px));
+    bottom: var(--nav-bottom);
     height: var(--nav-height);
     background: var(--card);
     border-radius: 18px;
