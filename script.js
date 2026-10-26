@@ -1,5 +1,5 @@
 const STORAGE_KEY = 'knowMeData';
-const APP_VERSION = '1.0.8';
+const APP_VERSION = '1.0.9';
 const WHEEL_ITEM = 44;
 const RELATIVE_ROLES = [
     { id: 'mother', label: 'Mother', group: 'Parents and grandparents', band: 'parents' },

@@ -15,7 +15,7 @@
     --border: #E8DDD0;
     --danger: #B42318;
     --nav-height: 64px;
-    --nav-bottom: 0px;
+    --nav-bottom: -12px;
     --screen-inset-top: 48px;
     --screen-inset-bottom: 12px;
     --screen-inset-side: 14px;
@@ -39,7 +39,7 @@ body {
     flex-direction: column;
     padding-top: max(var(--screen-inset-top), env(safe-area-inset-top, 0px));
     padding-right: max(var(--screen-inset-side), env(safe-area-inset-right, 0px));
-    padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 8px);
+    padding-bottom: calc(var(--nav-height) + var(--nav-bottom) + 12px);
     padding-left: max(var(--screen-inset-side), env(safe-area-inset-left, 0px));
     color: var(--text);
 }
@@ -207,14 +207,13 @@ input, textarea, select, button {
 
 .bottom-nav {
     position: fixed;
-    left: 0;
-    right: 0;
+    left: max(var(--screen-inset-side), env(safe-area-inset-left, 0px));
+    right: max(var(--screen-inset-side), env(safe-area-inset-right, 0px));
     bottom: var(--nav-bottom);
-    height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    height: var(--nav-height);
     background: var(--card);
-    border-radius: 18px 18px 0 0;
-    box-shadow: 0 -4px 18px rgba(44, 36, 27, 0.1);
+    border-radius: 18px;
+    box-shadow: 0 4px 18px rgba(44, 36, 27, 0.14);
     display: flex;
     z-index: 900;
 }
