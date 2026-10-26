@@ -1,5 +1,5 @@
 const STORAGE_KEY = 'knowMeData';
-const APP_VERSION = '1.0.7';
+const APP_VERSION = '1.0.8';
 const WHEEL_ITEM = 44;
 const RELATIVE_ROLES = [
     { id: 'mother', label: 'Mother', group: 'Parents and grandparents', band: 'parents' },
@@ -24,12 +24,12 @@ const RELATIVE_ROLES = [
     { id: 'uncle', label: 'Uncle', group: 'Extended family', band: 'aunts' },
     { id: 'niece', label: 'Niece', group: 'Extended family', band: 'niblings' },
     { id: 'nephew', label: 'Nephew', group: 'Extended family', band: 'niblings' },
-    { id: 'mother-in-law', label: 'Mother-in-law', group: 'In-laws', band: 'parents' },
-    { id: 'father-in-law', label: 'Father-in-law', group: 'In-laws', band: 'parents' },
-    { id: 'brother-in-law', label: 'Brother-in-law', group: 'In-laws', band: 'siblings' },
-    { id: 'sister-in-law', label: 'Sister-in-law', group: 'In-laws', band: 'siblings' },
-    { id: 'son-in-law', label: 'Son-in-law', group: 'In-laws', band: 'children' },
-    { id: 'daughter-in-law', label: 'Daughter-in-law', group: 'In-laws', band: 'children' },
+    { id: 'mother-in-law', label: 'Mother-in-law', group: 'In-laws', band: 'inlaws' },
+    { id: 'father-in-law', label: 'Father-in-law', group: 'In-laws', band: 'inlaws' },
+    { id: 'brother-in-law', label: 'Brother-in-law', group: 'In-laws', band: 'inlaws' },
+    { id: 'sister-in-law', label: 'Sister-in-law', group: 'In-laws', band: 'inlaws' },
+    { id: 'son-in-law', label: 'Son-in-law', group: 'In-laws', band: 'inlaws' },
+    { id: 'daughter-in-law', label: 'Daughter-in-law', group: 'In-laws', band: 'inlaws' },
     { id: 'child', label: 'Child', group: 'Children and grandchildren', band: 'children' },
     { id: 'son', label: 'Son', group: 'Children and grandchildren', band: 'children' },
     { id: 'daughter', label: 'Daughter', group: 'Children and grandchildren', band: 'children' },
@@ -981,25 +981,46 @@ class KnowMe {
             const role = RELATIVE_ROLES.find((entry) => entry.id === item.role);
             return (role ? role.band : 'other') === band;
         });
-        const cards = (items) => items.map((item) => this.relativeCard(item)).join('');
-        const parts = [];
-        const pushBand = (band) => {
-            const html = cards(inBand(band));
-            if (!html) return;
-            if (parts.length) parts.push('<div class="pedigree-stem"></div>');
-            parts.push(`<div class="pedigree-row">${html}</div>`);
-        };
-        ['great', 'grandparents', 'parents', 'aunts', 'cousins'].forEach(pushBand);
-        if (parts.length) parts.push('<div class="pedigree-stem"></div>');
-        parts.push(`
-            <div class="pedigree-focus">
-                <div class="pedigree-side left">${cards(inBand('siblings'))}</div>
-                <div class="tree-card tree-self">${this.escape(person.name)}</div>
-                <div class="pedigree-side right">${cards(inBand('partner'))}</div>
+        const row = (items) => `<div class="kin-row">${items.map((item) => this.relativeCard(item)).join('')}</div>`;
+        const above = ['great', 'grandparents', 'parents'].flatMap((band) => {
+            const items = inBand(band);
+            return items.length ? [row(items)] : [];
+        });
+        const siblings = inBand('siblings');
+        const partners = inBand('partner');
+        const below = ['children', 'grandchildren', 'great-grandchildren'].flatMap((band) => {
+            const items = inBand(band);
+            return items.length ? [row(items)] : [];
+        });
+        const level = `
+            <div class="kin-level">
+                <div class="kin-level-side left">${siblings.length ? row(siblings) : ''}</div>
+                <div class="tree-card tree-self"><strong>${this.escape(person.name)}</strong></div>
+                <div class="kin-level-side right">${partners.length ? row(partners) : ''}</div>
             </div>
-        `);
-        ['children', 'niblings', 'grandchildren', 'great-grandchildren', 'other'].forEach(pushBand);
-        tree.innerHTML = `<div class="pedigree">${parts.join('')}</div>`;
+        `;
+        const sides = [
+            ['aunts', 'Aunts and uncles'],
+            ['cousins', 'Cousins'],
+            ['niblings', 'Nieces and nephews'],
+            ['inlaws', 'In-laws'],
+            ['other', 'Chosen and other']
+        ].map(([band, label]) => {
+            const items = inBand(band);
+            if (!items.length) return '';
+            return `<div class="kin-side"><p class="kin-side-label">${label}</p>${row(items)}</div>`;
+        }).join('');
+        const hasLine = above.length > 0 || below.length > 0;
+        tree.innerHTML = `
+            <div class="kin">
+                <div class="kin-trunk${hasLine ? ' has-line' : ''}">
+                    ${above.join('')}
+                    ${level}
+                    ${below.join('')}
+                </div>
+                ${sides ? `<div class="kin-sides"><p class="kin-sides-label">Other branches</p>${sides}</div>` : ''}
+            </div>
+        `;
     }
 
     relativeCard(relative) {

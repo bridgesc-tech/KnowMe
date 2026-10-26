@@ -15,7 +15,7 @@
     --border: #E8DDD0;
     --danger: #B42318;
     --nav-height: 64px;
-    --nav-bottom: max(4px, calc(env(safe-area-inset-bottom, 0px) - 30px));
+    --nav-bottom: 0px;
     --screen-inset-top: 48px;
     --screen-inset-bottom: 12px;
     --screen-inset-side: 14px;
@@ -39,7 +39,7 @@ body {
     flex-direction: column;
     padding-top: max(var(--screen-inset-top), env(safe-area-inset-top, 0px));
     padding-right: max(var(--screen-inset-side), env(safe-area-inset-right, 0px));
-    padding-bottom: calc(var(--nav-height) + var(--nav-bottom) + 10px);
+    padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 8px);
     padding-left: max(var(--screen-inset-side), env(safe-area-inset-left, 0px));
     color: var(--text);
 }
@@ -207,13 +207,14 @@ input, textarea, select, button {
 
 .bottom-nav {
     position: fixed;
-    left: max(var(--screen-inset-side), env(safe-area-inset-left, 0px));
-    right: max(var(--screen-inset-side), env(safe-area-inset-right, 0px));
+    left: 0;
+    right: 0;
     bottom: var(--nav-bottom);
-    height: var(--nav-height);
+    height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     background: var(--card);
-    border-radius: 18px;
-    box-shadow: 0 4px 18px rgba(44, 36, 27, 0.14);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -4px 18px rgba(44, 36, 27, 0.1);
     display: flex;
     z-index: 900;
 }
@@ -607,52 +608,115 @@ textarea {
     margin-top: 22px;
 }
 
-.pedigree {
+.kin {
+    padding: 4px 0 8px;
+}
+
+.kin-trunk {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 4px 0 12px;
+    gap: 26px;
+    width: 100%;
 }
 
-.pedigree-row,
-.pedigree-side {
+.kin-trunk.has-line::before {
+    content: "";
+    position: absolute;
+    top: 22px;
+    bottom: 22px;
+    left: 50%;
+    width: 2px;
+    background: #D9CBBA;
+    transform: translateX(-50%);
+}
+
+.kin-row {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
-    width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
-.pedigree-focus {
+.kin-level {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    gap: 8px;
     width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
-.pedigree-side.left {
+.kin-level-side {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.kin-level-side.left {
     justify-content: flex-end;
 }
 
-.pedigree-side.right {
+.kin-level-side.right {
     justify-content: flex-start;
 }
 
-.pedigree-stem {
-    width: 2px;
-    height: 16px;
-    background: var(--border);
-    border-radius: 2px;
+.kin-level-side.left:not(:empty)::after,
+.kin-level-side.right:not(:empty)::before {
+    content: "";
+    width: 14px;
+    height: 2px;
+    background: #D9CBBA;
+    flex: none;
+}
+
+.kin-level-side .kin-row {
+    justify-content: flex-end;
+}
+
+.kin-level-side.right .kin-row {
+    justify-content: flex-start;
+}
+
+.kin-sides {
+    margin-top: 22px;
+    width: 100%;
+}
+
+.kin-sides-label,
+.kin-side-label {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.kin-side {
+    margin-top: 12px;
+    padding: 10px 10px 10px 12px;
+    border-left: 2px solid #E7C3BA;
+}
+
+.kin-side-label {
+    margin-bottom: 8px;
+}
+
+.kin-side .kin-row {
+    justify-content: flex-start;
 }
 
 .tree-card {
-    min-width: 108px;
+    min-width: 84px;
+    max-width: 132px;
     border: none;
     border-radius: 14px;
     background: var(--card);
     box-shadow: var(--shadow);
-    padding: 12px;
+    padding: 10px;
     text-align: center;
     color: inherit;
     cursor: pointer;
