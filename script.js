@@ -1,14 +1,45 @@
 const STORAGE_KEY = 'knowMeData';
-const APP_VERSION = '1.0.4';
+const APP_VERSION = '1.0.6';
 const WHEEL_ITEM = 44;
 const RELATIVE_ROLES = [
-    { id: 'parent', label: 'Parent' },
-    { id: 'partner', label: 'Partner' },
-    { id: 'sibling', label: 'Sibling' },
-    { id: 'child', label: 'Child' },
-    { id: 'other', label: 'Other' }
+    { id: 'mother', label: 'Mother', group: 'Parents and grandparents', band: 'parents' },
+    { id: 'father', label: 'Father', group: 'Parents and grandparents', band: 'parents' },
+    { id: 'stepmother', label: 'Stepmother', group: 'Parents and grandparents', band: 'parents' },
+    { id: 'stepfather', label: 'Stepfather', group: 'Parents and grandparents', band: 'parents' },
+    { id: 'parent', label: 'Parent', group: 'Parents and grandparents', band: 'parents' },
+    { id: 'grandmother', label: 'Grandmother', group: 'Parents and grandparents', band: 'grandparents' },
+    { id: 'grandfather', label: 'Grandfather', group: 'Parents and grandparents', band: 'grandparents' },
+    { id: 'great-grandmother', label: 'Great-grandmother', group: 'Parents and grandparents', band: 'great' },
+    { id: 'great-grandfather', label: 'Great-grandfather', group: 'Parents and grandparents', band: 'great' },
+    { id: 'godparent', label: 'Godparent', group: 'Parents and grandparents', band: 'parents' },
+    { id: 'spouse', label: 'Spouse', group: 'Their generation', band: 'partner' },
+    { id: 'partner', label: 'Partner', group: 'Their generation', band: 'partner' },
+    { id: 'sibling', label: 'Sibling', group: 'Their generation', band: 'siblings' },
+    { id: 'brother', label: 'Brother', group: 'Their generation', band: 'siblings' },
+    { id: 'sister', label: 'Sister', group: 'Their generation', band: 'siblings' },
+    { id: 'half-sibling', label: 'Half-sibling', group: 'Their generation', band: 'siblings' },
+    { id: 'step-sibling', label: 'Step-sibling', group: 'Their generation', band: 'siblings' },
+    { id: 'cousin', label: 'Cousin', group: 'Extended family', band: 'cousins' },
+    { id: 'aunt', label: 'Aunt', group: 'Extended family', band: 'aunts' },
+    { id: 'uncle', label: 'Uncle', group: 'Extended family', band: 'aunts' },
+    { id: 'niece', label: 'Niece', group: 'Extended family', band: 'niblings' },
+    { id: 'nephew', label: 'Nephew', group: 'Extended family', band: 'niblings' },
+    { id: 'mother-in-law', label: 'Mother-in-law', group: 'In-laws', band: 'parents' },
+    { id: 'father-in-law', label: 'Father-in-law', group: 'In-laws', band: 'parents' },
+    { id: 'brother-in-law', label: 'Brother-in-law', group: 'In-laws', band: 'siblings' },
+    { id: 'sister-in-law', label: 'Sister-in-law', group: 'In-laws', band: 'siblings' },
+    { id: 'son-in-law', label: 'Son-in-law', group: 'In-laws', band: 'children' },
+    { id: 'daughter-in-law', label: 'Daughter-in-law', group: 'In-laws', band: 'children' },
+    { id: 'child', label: 'Child', group: 'Children and grandchildren', band: 'children' },
+    { id: 'son', label: 'Son', group: 'Children and grandchildren', band: 'children' },
+    { id: 'daughter', label: 'Daughter', group: 'Children and grandchildren', band: 'children' },
+    { id: 'stepchild', label: 'Stepchild', group: 'Children and grandchildren', band: 'children' },
+    { id: 'godchild', label: 'Godchild', group: 'Children and grandchildren', band: 'children' },
+    { id: 'grandchild', label: 'Grandchild', group: 'Children and grandchildren', band: 'grandchildren' },
+    { id: 'great-grandchild', label: 'Great-grandchild', group: 'Children and grandchildren', band: 'great-grandchildren' },
+    { id: 'chosen', label: 'Chosen family', group: 'Other', band: 'other' },
+    { id: 'other', label: 'Other', group: 'Other', band: 'other' }
 ];
-
 const CATEGORIES = [
     { id: 'dates', label: 'Dates', icon: '📅', hint: 'Birthdays, anniversaries, and days that matter' },
     { id: 'family', label: 'Family', icon: '👨‍👩‍👧', hint: 'People around them' },
@@ -946,25 +977,29 @@ class KnowMe {
         const tree = document.getElementById('familyTree');
         if (!person || !tree) return;
         const relatives = person.relatives || [];
-        const group = (role) => relatives.filter((item) => item.role === role);
-        const row = (items) => items.map((item) => this.relativeCard(item)).join('');
-        tree.innerHTML = `
-            ${this.treeBand('Parents', row(group('parent')))}
-            <div class="tree-band">
-                <div class="tree-row">
-                    ${row(group('partner'))}
-                    <div class="tree-card tree-self">${this.escape(person.name)}</div>
-                    ${row(group('sibling'))}
-                </div>
+        const inBand = (band) => relatives.filter((item) => {
+            const role = RELATIVE_ROLES.find((entry) => entry.id === item.role);
+            return (role ? role.band : 'other') === band;
+        });
+        const cards = (items) => items.map((item) => this.relativeCard(item)).join('');
+        const parts = [];
+        const pushBand = (band) => {
+            const html = cards(inBand(band));
+            if (!html) return;
+            if (parts.length) parts.push('<div class="pedigree-stem"></div>');
+            parts.push(`<div class="pedigree-row">${html}</div>`);
+        };
+        ['great', 'grandparents', 'parents', 'aunts', 'cousins'].forEach(pushBand);
+        if (parts.length) parts.push('<div class="pedigree-stem"></div>');
+        parts.push(`
+            <div class="pedigree-focus">
+                <div class="pedigree-side left">${cards(inBand('siblings'))}</div>
+                <div class="tree-card tree-self">${this.escape(person.name)}</div>
+                <div class="pedigree-side right">${cards(inBand('partner'))}</div>
             </div>
-            ${this.treeBand('Children', row(group('child')))}
-            ${this.treeBand('Other', row(group('other')))}
-        `;
-    }
-
-    treeBand(label, cards) {
-        if (!cards) return '';
-        return `<div class="tree-band"><p class="note-section-label">${label}</p><div class="tree-row">${cards}</div></div>`;
+        `);
+        ['children', 'niblings', 'grandchildren', 'great-grandchildren', 'other'].forEach(pushBand);
+        tree.innerHTML = `<div class="pedigree">${parts.join('')}</div>`;
     }
 
     relativeCard(relative) {
@@ -982,12 +1017,32 @@ class KnowMe {
         if (!person) return;
         const relative = relativeId ? (person.relatives || []).find((item) => item.id === relativeId) : null;
         this.editingRelativeId = relative ? relative.id : null;
+        this.fillRelativeRoles();
         document.getElementById('relativeModalTitle').textContent = relative ? 'Edit relative' : 'Add to tree';
         document.getElementById('relativeNameInput').value = relative ? relative.name : '';
-        document.getElementById('relativeRoleInput').value = relative ? relative.role : 'parent';
+        document.getElementById('relativeRoleInput').value = relative ? relative.role : '';
         document.getElementById('deleteRelativeBtn').classList.toggle('hidden', !relative);
         document.getElementById('relativeModal').classList.remove('hidden');
         document.getElementById('relativeNameInput').focus();
+    }
+
+    fillRelativeRoles() {
+        const select = document.getElementById('relativeRoleInput');
+        if (select.dataset.ready === '1') return;
+        const groups = [];
+        RELATIVE_ROLES.forEach((role) => {
+            let group = groups.find((item) => item.label === role.group);
+            if (!group) {
+                group = { label: role.group, roles: [] };
+                groups.push(group);
+            }
+            group.roles.push(role);
+        });
+        select.innerHTML = '<option value="">Choose relationship</option>' + groups.map((group) => {
+            const options = group.roles.map((role) => `<option value="${role.id}">${this.escape(role.label)}</option>`).join('');
+            return `<optgroup label="${this.escape(group.label)}">${options}</optgroup>`;
+        }).join('');
+        select.dataset.ready = '1';
     }
 
     closeRelativeModal() {
@@ -1002,6 +1057,10 @@ class KnowMe {
         const role = document.getElementById('relativeRoleInput').value;
         if (!name) {
             alert('Add a name first.');
+            return;
+        }
+        if (!role) {
+            alert('Choose how they are related.');
             return;
         }
         if (!Array.isArray(person.relatives)) person.relatives = [];

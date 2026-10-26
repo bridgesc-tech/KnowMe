@@ -14,10 +14,10 @@
     --text-secondary: #7A6F64;
     --border: #E8DDD0;
     --danger: #B42318;
-    --nav-height: 68px;
+    --nav-height: 64px;
     --screen-inset-top: 48px;
-    --screen-inset-bottom: 4px;
-    --screen-inset-side: 8px;
+    --screen-inset-bottom: 12px;
+    --screen-inset-side: 14px;
     --shadow: 0 1px 3px rgba(44, 36, 27, 0.08);
     --shadow-hover: 0 8px 24px rgba(44, 36, 27, 0.12);
     --radius: 16px;
@@ -32,13 +32,15 @@ html {
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: var(--bg);
-    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     padding-top: max(var(--screen-inset-top), env(safe-area-inset-top, 0px));
     padding-right: max(var(--screen-inset-side), env(safe-area-inset-right, 0px));
-    padding-bottom: calc(var(--nav-height) + var(--screen-inset-bottom) + 12px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(var(--nav-height) + max(12px, env(safe-area-inset-bottom, 0px) - 16px) + 10px);
     padding-left: max(var(--screen-inset-side), env(safe-area-inset-left, 0px));
     color: var(--text);
-    overflow-x: hidden;
 }
 
 input, textarea, select, button {
@@ -48,11 +50,17 @@ input, textarea, select, button {
 
 .container {
     max-width: 520px;
+    width: 100%;
     margin: 0 auto;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .app-header {
-    margin-bottom: 18px;
+    flex: none;
+    margin-bottom: 12px;
 }
 
 .app-header h1 {
@@ -69,10 +77,25 @@ input, textarea, select, button {
 
 .tab-content {
     display: none;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
 }
 
 .tab-content.active {
-    display: block;
+    display: flex;
+}
+
+.screen-fixed {
+    flex: none;
+}
+
+.screen-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
 }
 
 .section-title {
@@ -177,11 +200,15 @@ input, textarea, select, button {
     margin: 0;
 }
 
+.list-header.screen-fixed {
+    margin-bottom: 10px;
+}
+
 .bottom-nav {
     position: fixed;
     left: max(var(--screen-inset-side), env(safe-area-inset-left, 0px));
     right: max(var(--screen-inset-side), env(safe-area-inset-right, 0px));
-    bottom: calc(var(--screen-inset-bottom) + env(safe-area-inset-bottom, 0px));
+    bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) - 16px));
     height: var(--nav-height);
     background: var(--card);
     border-radius: 18px;
@@ -299,8 +326,10 @@ textarea {
     inset: 0;
     background: var(--bg);
     z-index: 800;
-    overflow-y: auto;
-    padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 28px max(16px, env(safe-area-inset-left, 0px));
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
 }
 
 .overlay-top {
@@ -577,11 +606,43 @@ textarea {
     margin-top: 22px;
 }
 
-.tree-row {
+.pedigree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 0 12px;
+}
+
+.pedigree-row,
+.pedigree-side {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
     justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.pedigree-focus {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.pedigree-side.left {
+    justify-content: flex-end;
+}
+
+.pedigree-side.right {
+    justify-content: flex-start;
+}
+
+.pedigree-stem {
+    width: 2px;
+    height: 16px;
+    background: var(--border);
+    border-radius: 2px;
 }
 
 .tree-card {

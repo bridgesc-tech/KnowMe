@@ -10,7 +10,7 @@
     <link rel="icon" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css?v=1.0.4">
+    <link rel="stylesheet" href="styles.css?v=1.0.6">
 </head>
 <body>
     <div id="updateBanner" class="update-modal hidden">
@@ -32,6 +32,7 @@
         </header>
 
         <div class="tab-content active" id="homeTab">
+            <div class="screen-scroll">
             <section class="ask-cta" id="askCta">
                 <p>Learn one new thing</p>
                 <button type="button" class="btn btn-primary" id="homeAskBtn">Ask a question</button>
@@ -44,17 +45,19 @@
                 <h2 class="section-title">People</h2>
                 <div id="homePeople"></div>
             </section>
+            </div>
         </div>
 
         <div class="tab-content" id="peopleTab">
-            <div class="list-header">
+            <div class="list-header screen-fixed">
                 <h2 class="section-title">Your people</h2>
                 <button type="button" class="btn btn-primary" id="addPersonBtn">Add</button>
             </div>
-            <div id="peopleList"></div>
+            <div class="screen-scroll" id="peopleList"></div>
         </div>
 
         <div class="tab-content" id="askTab">
+            <div class="screen-fixed">
             <div class="form-group">
                 <label for="askPersonSelect">Who</label>
                 <select id="askPersonSelect"></select>
@@ -63,6 +66,8 @@
                 <label for="askCategorySelect">Topic</label>
                 <select id="askCategorySelect"></select>
             </div>
+            </div>
+            <div class="screen-scroll">
             <div class="question-card" id="questionCard"></div>
             <div id="askAnswerWrap" class="ask-answer-wrap hidden">
                 <label for="askAnswerInput">Their answer</label>
@@ -72,10 +77,12 @@
                     <button type="button" class="btn btn-secondary" id="skipQuestionBtn">Another question</button>
                 </div>
             </div>
+            </div>
         </div>
 
         <div class="tab-content" id="moreTab">
-            <h2 class="section-title">On this phone</h2>
+            <h2 class="section-title screen-fixed">On this phone</h2>
+            <div class="screen-scroll">
             <p class="help-text">Notes stay on this device. Nothing is sent to the cloud. Export a backup if you switch phones.</p>
             <div class="btn-stack">
                 <button type="button" class="btn btn-primary" id="exportBtn">Export backup</button>
@@ -86,7 +93,8 @@
             <p class="help-text">On iPhone: Share, then Add to Home Screen. On Android: the browser menu, then Install app or Add to Home screen.</p>
             <button type="button" class="btn btn-secondary" id="checkUpdateBtn">Check for updates</button>
             <p class="help-text" id="updateStatusText"></p>
-            <p class="version-text" id="versionText">Version 1.0.4</p>
+            <p class="version-text" id="versionText">Version 1.0.6</p>
+            </div>
         </div>
     </div>
 
@@ -110,6 +118,7 @@
     </nav>
 
     <div id="personScreen" class="overlay hidden">
+        <div class="screen-fixed">
         <button type="button" class="text-btn" id="closePersonBtn">‹ People</button>
         <div class="hub-photo-wrap">
             <button type="button" class="hub-photo" id="hubPhotoBtn" aria-label="Add or change photo">
@@ -124,21 +133,28 @@
             <button type="button" class="btn btn-secondary" id="editPersonBtn">Edit</button>
             <button type="button" class="btn btn-primary" id="hubAskBtn">Ask a question</button>
         </div>
+        </div>
+        <div class="screen-scroll">
         <div class="category-grid" id="categoryGrid"></div>
+        </div>
     </div>
 
     <div id="categoryScreen" class="overlay overlay-top hidden">
+        <div class="screen-fixed">
         <button type="button" class="text-btn" id="closeCategoryBtn">‹ Back</button>
         <h2 id="categoryTitle"></h2>
         <p id="categoryHint" class="help-text"></p>
-        <div id="categoryNotes"></div>
         <button type="button" class="btn btn-primary add-btn" id="addNoteBtn">Add</button>
+        </div>
+        <div class="screen-scroll">
+        <div id="categoryNotes"></div>
         <section id="familyTreeSection" class="family-tree-section hidden">
             <h3 class="note-section-label">Family tree</h3>
-            <p class="help-text">Add parents, a partner, siblings, and children. Tap a name to edit it.</p>
+            <p class="help-text">Add each person and how they are related. The diagram places them around this person. Tap a name to edit it.</p>
             <div id="familyTree"></div>
             <button type="button" class="btn btn-secondary add-btn" id="addRelativeBtn">Add to tree</button>
         </section>
+        </div>
     </div>
 
     <div id="personModal" class="modal hidden">
@@ -211,14 +227,8 @@
                 <input type="text" id="relativeNameInput" maxlength="60" placeholder="Their name">
             </div>
             <div class="form-group">
-                <label for="relativeRoleInput">Place in the tree</label>
-                <select id="relativeRoleInput">
-                    <option value="parent">Parent</option>
-                    <option value="partner">Partner</option>
-                    <option value="sibling">Sibling</option>
-                    <option value="child">Child</option>
-                    <option value="other">Other</option>
-                </select>
+                <label for="relativeRoleInput">Relationship</label>
+                <select id="relativeRoleInput"></select>
             </div>
             <button type="button" class="btn btn-primary" id="saveRelativeBtn">Save</button>
             <button type="button" class="btn btn-danger hidden" id="deleteRelativeBtn">Remove from tree</button>
@@ -226,7 +236,7 @@
         </div>
     </div>
 
-    <script src="questions.js?v=1.0.4"></script>
-    <script src="script.js?v=1.0.4"></script>
+    <script src="questions.js?v=1.0.6"></script>
+    <script src="script.js?v=1.0.6"></script>
 </body>
 </html>
