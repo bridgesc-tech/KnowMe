@@ -10,9 +10,19 @@
     <link rel="icon" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css?v=1.0.3">
+    <link rel="stylesheet" href="styles.css?v=1.0.4">
 </head>
 <body>
+    <div id="updateBanner" class="update-modal hidden">
+        <div class="update-modal-card" role="dialog" aria-modal="true" aria-labelledby="updateModalTitle">
+            <h2 id="updateModalTitle">Update available</h2>
+            <p>A new version of KnowMe is ready. Update now, or continue and do it later.</p>
+            <div class="update-modal-actions">
+                <button type="button" id="updateNowBtn" class="btn btn-primary">Update</button>
+                <button type="button" id="updateLaterBtn" class="btn btn-secondary">Later</button>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <header class="app-header" id="mainHeader">
             <div>
@@ -74,7 +84,9 @@
             </div>
             <h2 class="section-title">Add to Home Screen</h2>
             <p class="help-text">On iPhone: Share, then Add to Home Screen. On Android: the browser menu, then Install app or Add to Home screen.</p>
-            <p class="version-text" id="versionText">Version 1.0.3</p>
+            <button type="button" class="btn btn-secondary" id="checkUpdateBtn">Check for updates</button>
+            <p class="help-text" id="updateStatusText"></p>
+            <p class="version-text" id="versionText">Version 1.0.4</p>
         </div>
     </div>
 
@@ -121,6 +133,12 @@
         <p id="categoryHint" class="help-text"></p>
         <div id="categoryNotes"></div>
         <button type="button" class="btn btn-primary add-btn" id="addNoteBtn">Add</button>
+        <section id="familyTreeSection" class="family-tree-section hidden">
+            <h3 class="note-section-label">Family tree</h3>
+            <p class="help-text">Add parents, a partner, siblings, and children. Tap a name to edit it.</p>
+            <div id="familyTree"></div>
+            <button type="button" class="btn btn-secondary add-btn" id="addRelativeBtn">Add to tree</button>
+        </section>
     </div>
 
     <div id="personModal" class="modal hidden">
@@ -149,8 +167,31 @@
                 <div class="chip-row" id="dateLabelChips"></div>
             </div>
             <div class="form-group hidden" id="noteDateGroup">
-                <label for="noteDateInput">Date</label>
-                <input type="date" id="noteDateInput">
+                <span class="field-label">Date</span>
+                <div class="date-wheels">
+                    <div>
+                        <span class="wheel-label">Month</span>
+                        <div class="wheel-frame">
+                            <div class="wheel-highlight"></div>
+                            <div class="wheel-scroller" id="monthWheel"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="wheel-label">Day</span>
+                        <div class="wheel-frame">
+                            <div class="wheel-highlight"></div>
+                            <div class="wheel-scroller" id="dayWheel"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="wheel-label">Year</span>
+                        <div class="wheel-frame">
+                            <div class="wheel-highlight"></div>
+                            <div class="wheel-scroller" id="yearWheel"></div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="noteDateInput">
             </div>
             <div class="form-group">
                 <label for="noteValueInput" id="noteValueLabel">Details</label>
@@ -162,7 +203,30 @@
         </div>
     </div>
 
-    <script src="questions.js?v=1.0.3"></script>
-    <script src="script.js?v=1.0.3"></script>
+    <div id="relativeModal" class="modal hidden">
+        <div class="modal-card">
+            <h2 id="relativeModalTitle">Add to tree</h2>
+            <div class="form-group">
+                <label for="relativeNameInput">Name</label>
+                <input type="text" id="relativeNameInput" maxlength="60" placeholder="Their name">
+            </div>
+            <div class="form-group">
+                <label for="relativeRoleInput">Place in the tree</label>
+                <select id="relativeRoleInput">
+                    <option value="parent">Parent</option>
+                    <option value="partner">Partner</option>
+                    <option value="sibling">Sibling</option>
+                    <option value="child">Child</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" id="saveRelativeBtn">Save</button>
+            <button type="button" class="btn btn-danger hidden" id="deleteRelativeBtn">Remove from tree</button>
+            <button type="button" class="btn btn-secondary" id="cancelRelativeBtn">Cancel</button>
+        </div>
+    </div>
+
+    <script src="questions.js?v=1.0.4"></script>
+    <script src="script.js?v=1.0.4"></script>
 </body>
 </html>
